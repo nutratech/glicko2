@@ -6,7 +6,6 @@ import re
 from setuptools import setup
 from setuptools.command.test import test
 
-
 # detect the current version
 with open("glicko2.py") as f:
     version = re.search(r"__version__\s*=\s*\'(.+?)\'", f.read()).group(1)
