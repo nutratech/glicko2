@@ -27,7 +27,7 @@ TAU = 1.0
 EPSILON = 0.000001
 
 
-class Rating(object):
+class Rating:
     def __init__(self, mu=MU, phi=PHI, sigma=SIGMA):
         self.mu = mu
         self.phi = phi
@@ -39,7 +39,7 @@ class Rating(object):
         return "%s.%s(mu=%.3f, phi=%.3f, sigma=%.3f)" % args
 
 
-class Glicko2(object):
+class Glicko2:
     def __init__(self, mu=MU, phi=PHI, sigma=SIGMA, tau=TAU, epsilon=EPSILON):
         self.mu = mu
         self.phi = phi

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Utilities for PyPI and twine"""
 from __future__ import with_statement
 
 import re
@@ -7,13 +8,14 @@ from setuptools import setup
 from setuptools.command.test import test
 
 # detect the current version
-with open("glicko2.py") as f:
+with open("glicko2.py", encoding="utf-8") as f:
     version = re.search(r"__version__\s*=\s*\'(.+?)\'", f.read()).group(1)
 assert version
 
 
 # use pytest instead
 def run_tests(self):
+    """Method to run tests"""
     test_file = re.sub(r"\.pyc$", ".py", __import__(self.test_suite).__file__)
     raise SystemExit(__import__("pytest").main([test_file]))
 
