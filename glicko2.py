@@ -12,6 +12,9 @@ import math
 
 __version__ = "0.0.dev"
 
+# pylint: disable=invalid-name,missing-function-docstring,missing-class-docstring
+# pylint: disable=too-many-arguments,too-few-public-methods,consider-using-f-string
+
 #: The actual score for win
 WIN = 1.0
 #: The actual score for draw
