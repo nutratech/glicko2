@@ -13,6 +13,7 @@ with open("glicko2.py", encoding="utf-8") as f:
 if not version:
     raise ValueError("Version not found")
 
+
 # use pytest instead
 def run_tests(self):
     """Method to run tests"""
