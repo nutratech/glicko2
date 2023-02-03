@@ -1,5 +1,6 @@
 .idea/
 .venv/
+.mypy_cache/
 
 # Old
 *.py[cod]
