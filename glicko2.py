@@ -12,6 +12,8 @@ import math
 
 __version__ = "0.0.dev"
 
+from typing import Tuple
+
 # pylint: disable=invalid-name,missing-function-docstring,missing-class-docstring
 # pylint: disable=too-many-arguments,too-few-public-methods,consider-using-f-string
 
@@ -31,26 +33,26 @@ EPSILON = 0.000001
 
 
 class Rating:
-    def __init__(self, mu=MU, phi=PHI, sigma=SIGMA):
+    def __init__(self, mu=MU, phi=PHI, sigma=SIGMA) -> None:
         self.mu = mu
         self.phi = phi
         self.sigma = sigma
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         c = type(self)
         args = (c.__module__, c.__name__, self.mu, self.phi, self.sigma)
         return "%s.%s(mu=%.3f, phi=%.3f, sigma=%.3f)" % args
 
 
 class Glicko2:
-    def __init__(self, mu=MU, phi=PHI, sigma=SIGMA, tau=TAU, epsilon=EPSILON):
+    def __init__(self, mu=MU, phi=PHI, sigma=SIGMA, tau=TAU, epsilon=EPSILON) -> None:
         self.mu = mu
         self.phi = phi
         self.sigma = sigma
         self.tau = tau
         self.epsilon = epsilon
 
-    def create_rating(self, mu=None, phi=None, sigma=None):
+    def create_rating(self, mu=None, phi=None, sigma=None) -> Rating:
         if mu is None:
             mu = self.mu
         if phi is None:
@@ -59,40 +61,40 @@ class Glicko2:
             sigma = self.sigma
         return Rating(mu, phi, sigma)
 
-    def scale_down(self, rating, ratio=173.7178):
+    def scale_down(self, rating: Rating, ratio=173.7178) -> Rating:
         mu = (rating.mu - self.mu) / ratio
         phi = rating.phi / ratio
         return self.create_rating(mu, phi, rating.sigma)
 
-    def scale_up(self, rating, ratio=173.7178):
+    def scale_up(self, rating: Rating, ratio=173.7178) -> Rating:
         mu = rating.mu * ratio + self.mu
         phi = rating.phi * ratio
         return self.create_rating(mu, phi, rating.sigma)
 
-    def reduce_impact(self, rating):
+    def reduce_impact(self, rating: Rating) -> float:
         """The original form is `g(RD)`. This function reduces the impact of
         games as a function of an opponent's RD.
         """
         return 1.0 / math.sqrt(1 + (3 * rating.phi**2) / (math.pi**2))
 
-    def expect_score(self, rating, other_rating, impact):
+    def expect_score(self, rating, other_rating, impact) -> float:
         return 1.0 / (1 + math.exp(-impact * (rating.mu - other_rating.mu)))
 
-    def determine_sigma(self, rating, difference, variance):
+    def determine_sigma(self, rating, difference, variance) -> float:
         """Determines new sigma."""
         phi = rating.phi
         difference_squared = difference**2
         # 1. Let a = ln(s^2), and define f(x)
         alpha = math.log(rating.sigma**2)
 
-        def f(x):
+        def f(x) -> float:
             """This function is twice the conditional log-posterior density of
             phi, and is the optimality criterion.
             """
             tmp = phi**2 + variance + math.exp(x)
             a = math.exp(x) * (difference_squared - tmp) / (2 * tmp**2)
             b = (x - alpha) / (self.tau**2)
-            return a - b
+            return float(a - b)
 
         # 2. Set the initial values of the iterative algorithm.
         a = alpha
@@ -120,9 +122,9 @@ class Glicko2:
                 f_a /= 2
             b, f_b = c, f_c
         # 5. Once |B-A| <= e, set s' <- e^(A/2)
-        return math.exp(1) ** (a / 2)
+        return float(math.exp(1) ** (a / 2))
 
-    def rate(self, rating, series):
+    def rate(self, rating, series) -> Rating:
         # Step 2. For each player, convert the rating and RD's onto the
         #         Glicko-2 scale.
         rating = self.scale_down(rating)
@@ -131,8 +133,8 @@ class Glicko2:
         # Step 4. Compute the quantity difference, the estimated improvement in
         #         rating by comparing the pre-period rating to the performance
         #         rating based only on game outcomes.
-        variance_inv = 0
-        difference = 0
+        variance_inv = 0.0
+        difference = 0.0
         if not series:
             # If the team didn't play in the series, do only Step 6
             phi_star = math.sqrt(rating.phi**2 + rating.sigma**2)
@@ -157,13 +159,13 @@ class Glicko2:
         # Step 8. Convert ratings and RD's back to original scale.
         return self.scale_up(self.create_rating(mu, phi, sigma))
 
-    def rate_1vs1(self, rating1, rating2, drawn=False):
+    def rate_1vs1(self, rating1, rating2, drawn=False) -> Tuple[Rating, Rating]:
         return (
             self.rate(rating1, [(DRAW if drawn else WIN, rating2)]),
             self.rate(rating2, [(DRAW if drawn else LOSS, rating1)]),
         )
 
-    def quality_1vs1(self, rating1, rating2):
+    def quality_1vs1(self, rating1, rating2) -> float:
         expected_score1 = self.expect_score(
             rating1, rating2, self.reduce_impact(rating1)
         )

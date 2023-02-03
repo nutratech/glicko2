@@ -15,7 +15,7 @@ if not version:
 
 
 # use pytest instead
-def run_tests(self):
+def run_tests(self) -> None:
     """Method to run tests"""
     test_file = re.sub(r"\.pyc$", ".py", __import__(self.test_suite).__file__)
     raise SystemExit(__import__("pytest").main([test_file]))
