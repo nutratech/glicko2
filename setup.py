@@ -9,15 +9,20 @@ from setuptools.command.test import test
 
 # detect the current version
 with open("glicko2.py", encoding="utf-8") as f:
-    version = re.search(r"__version__\s*=\s*\'(.+?)\'", f.read()).group(1)
+    version = re.search(  # type: ignore
+        r"__version__\s*=\s*\'(.+?)\'", f.read()
+    ).group(1)
 if not version:
     raise ValueError("Version not found")
 
 
 # use pytest instead
-def run_tests(self) -> None:
+def run_tests(self) -> None:  # type: ignore
     """Method to run tests"""
-    test_file = re.sub(r"\.pyc$", ".py", __import__(self.test_suite).__file__)
+    test_file = re.sub(
+        r"\.pyc$", ".py",
+        __import__(self.test_suite).__file__,  # type: ignore
+    )
     raise SystemExit(__import__("pytest").main([test_file]))
 
 
