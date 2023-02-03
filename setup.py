@@ -10,8 +10,8 @@ from setuptools.command.test import test
 # detect the current version
 with open("glicko2.py", encoding="utf-8") as f:
     version = re.search(r"__version__\s*=\s*\'(.+?)\'", f.read()).group(1)
-assert version
-
+if not version:
+    raise ValueError("Version not found")
 
 # use pytest instead
 def run_tests(self):
