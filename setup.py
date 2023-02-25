@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Utilities for PyPI and twine"""
 from __future__ import with_statement
