@@ -37,7 +37,7 @@ setup(
     license="BSD",
     author="Heungsub Lee",
     author_email="s" r"u" r"b" r"@" r"s" r"u" r"b" r"l" r"." r"e" r"e",
-    url="http://github.com/sublee/glicko2",
+    url="https://github.com/sublee/glicko2",
     description="The Glicko-2 rating system",
     long_description=__doc__,
     platforms="any",
