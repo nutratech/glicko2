@@ -22,6 +22,9 @@ from typing import List, Tuple
 WIN = 1.0
 #: The actual score for draw
 DRAW = 0.5
+#: The actual score for OT win & loss
+OTW = 2 / 3
+OTL = 1 / 3
 #: The actual score for loss
 LOSS = 0.0
 
@@ -192,11 +195,11 @@ class Glicko2:
         return self.scale_up(self.create_rating(mu, phi, sigma))
 
     def rate_1vs1(
-        self, rating1: Rating, rating2: Rating, drawn: bool = False
+        self, rating1: Rating, rating2: Rating, overtime: bool = False
     ) -> Tuple[Rating, Rating]:
         return (
-            self.rate(rating1, [(DRAW if drawn else WIN, rating2)]),
-            self.rate(rating2, [(DRAW if drawn else LOSS, rating1)]),
+            self.rate(rating1, [(OTW if overtime else WIN, rating2)]),
+            self.rate(rating2, [(OTL if overtime else LOSS, rating1)]),
         )
 
     def quality_1vs1(self, rating1: Rating, rating2: Rating) -> float:
