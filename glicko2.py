@@ -44,6 +44,24 @@ class Rating:
         args = (c.__module__, c.__name__, self.mu, self.phi, self.sigma)
         return "%s.%s(mu=%.3f, phi=%.3f, sigma=%.3f)" % args
 
+    def __lt__(self, other) -> bool:  # type: ignore
+        return bool(self.mu < other.mu)
+
+    def __le__(self, other) -> bool:  # type: ignore
+        return bool(self.mu <= other.mu)
+
+    def __gt__(self, other) -> bool:  # type: ignore
+        return bool(self.mu > other.mu)
+
+    def __ge__(self, other) -> bool:  # type: ignore
+        return bool(self.mu >= other.mu)
+
+    def __eq__(self, other) -> bool:  # type: ignore
+        return bool(self.mu == other.mu)
+
+    def __ne__(self, other) -> bool:  # type: ignore
+        return bool(self.mu != other.mu)
+
 
 class Glicko2:
     def __init__(
